@@ -1,4 +1,4 @@
-import { ADD_PORTFOLIO_COIN } from "./types";
+import { ADD_PORTFOLIO_COIN, REMOVE_PORTFOLIO_COIN } from "./types";
 
 export const addCoin = ({ symbol, amount }) => {
   return {
@@ -6,6 +6,15 @@ export const addCoin = ({ symbol, amount }) => {
     payload: {
       symbol,
       amount
+    }
+  };
+};
+
+export const removeCoin = ({ symbol }) => {
+  return {
+    type: REMOVE_PORTFOLIO_COIN,
+    payload: {
+      symbol
     }
   };
 };

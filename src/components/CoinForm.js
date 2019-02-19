@@ -21,6 +21,7 @@ const CoinForm = ({ handleSubmit }) => {
             component="input"
             type="number"
             placeholder="0.1"
+            step="any"
           />
         </div>
         <button className="ui teal labeled icon button">

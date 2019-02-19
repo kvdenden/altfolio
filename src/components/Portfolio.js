@@ -1,12 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { addCoin } from "../actions";
+import { addCoin, removeCoin } from "../actions";
 import CoinForm from "./CoinForm";
 
-const PortfolioItem = ({ coin }) => {
+const PortfolioItem = ({ coin, onRemove }) => {
   return (
     <div className="item">
+      <div className="right floated center aligned content">
+        <button className="ui basic negative button" onClick={onRemove}>
+          <i className="close icon" />
+          Remove
+        </button>
+      </div>
       <img
         alt={coin.symbol}
         className="ui avatar image"
@@ -20,16 +26,18 @@ const PortfolioItem = ({ coin }) => {
   );
 };
 
-const Portfolio = ({ coins, addCoin }) => {
+const Portfolio = ({ coins, addCoin, removeCoin }) => {
   return (
     <div className="portfolio">
       <h2 className="ui center aligned header">My Portfolio</h2>
-      <div className="ui segment">
-        <div className="ui big middle aligned divided list">
-          {coins.map(coin => (
-            <PortfolioItem key={coin.symbol} coin={coin} />
-          ))}
-        </div>
+      <div className="ui big middle aligned celled list">
+        {coins.map(coin => (
+          <PortfolioItem
+            key={coin.symbol}
+            coin={coin}
+            onRemove={() => removeCoin(coin)}
+          />
+        ))}
       </div>
       <div className="ui horizontal divider">Add coin to portfolio</div>
       <CoinForm onSubmit={addCoin} />
@@ -43,5 +51,5 @@ const mapStateToProps = ({ portfolio }) => {
 
 export default connect(
   mapStateToProps,
-  { addCoin }
+  { addCoin, removeCoin }
 )(Portfolio);
