@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
-import { addCoin, removeCoin } from "../actions";
+import { fetchCoinData, addCoin, removeCoin } from "../actions";
 import CoinForm from "./CoinForm";
 
 const PortfolioItem = ({ coin, onRemove }) => {
@@ -26,7 +26,11 @@ const PortfolioItem = ({ coin, onRemove }) => {
   );
 };
 
-const Portfolio = ({ coins, addCoin, removeCoin }) => {
+const Portfolio = ({ coins, fetchCoinData, addCoin, removeCoin }) => {
+  useEffect(() => {
+    fetchCoinData();
+  }, []);
+
   return (
     <div className="portfolio">
       <h2 className="ui center aligned header">My Portfolio</h2>
@@ -51,5 +55,5 @@ const mapStateToProps = ({ portfolio }) => {
 
 export default connect(
   mapStateToProps,
-  { addCoin, removeCoin }
+  { fetchCoinData, addCoin, removeCoin }
 )(Portfolio);
