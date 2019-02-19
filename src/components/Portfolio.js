@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { addCoin } from "../actions";
 import CoinForm from "./CoinForm";
 
 const PortfolioItem = ({ coin }) => {
@@ -19,7 +20,7 @@ const PortfolioItem = ({ coin }) => {
   );
 };
 
-const Portfolio = ({ coins }) => {
+const Portfolio = ({ coins, addCoin }) => {
   return (
     <div className="portfolio">
       <h2 className="ui center aligned header">My Portfolio</h2>
@@ -31,7 +32,7 @@ const Portfolio = ({ coins }) => {
         </div>
       </div>
       <div className="ui horizontal divider">Add coin to portfolio</div>
-      <CoinForm />
+      <CoinForm onSubmit={addCoin} />
     </div>
   );
 };
@@ -40,4 +41,7 @@ const mapStateToProps = ({ portfolio }) => {
   return { coins: Object.values(portfolio) };
 };
 
-export default connect(mapStateToProps)(Portfolio);
+export default connect(
+  mapStateToProps,
+  { addCoin }
+)(Portfolio);

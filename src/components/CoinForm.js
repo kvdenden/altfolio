@@ -1,19 +1,30 @@
 import React from "react";
+import { Field, reduxForm } from "redux-form";
 
-const CoinForm = () => {
+const CoinForm = ({ handleSubmit }) => {
   return (
     <div>
-      <form className="ui form">
+      <form className="ui form" onSubmit={handleSubmit}>
         <div className="field">
           <label>Coin</label>
-          <input type="text" />
+          <Field
+            name="symbol"
+            component="input"
+            type="text"
+            placeholder="BTC"
+          />
         </div>
         <div className="field">
           <label>Amount</label>
-          <input type="number" />
+          <Field
+            name="amount"
+            component="input"
+            type="number"
+            placeholder="0.1"
+          />
         </div>
         <button className="ui teal labeled icon button">
-          <i class="plus icon" />
+          <i className="plus icon" />
           Add coin
         </button>
       </form>
@@ -21,4 +32,6 @@ const CoinForm = () => {
   );
 };
 
-export default CoinForm;
+export default reduxForm({
+  form: "coinForm"
+})(CoinForm);
