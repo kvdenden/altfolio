@@ -1,10 +1,15 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
 
-const CoinForm = ({ handleSubmit }) => {
+const CoinForm = ({ handleSubmit, reset }) => {
+  const onSubmit = values => {
+    handleSubmit(values);
+    reset();
+  };
+
   return (
     <div>
-      <form className="ui form" onSubmit={handleSubmit}>
+      <form className="ui form" onSubmit={onSubmit}>
         <div className="field">
           <label>Coin</label>
           <Field
