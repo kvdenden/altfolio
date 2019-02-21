@@ -25,14 +25,12 @@ const CoinForm = ({ handleSubmit, reset }) => {
             name="amount"
             component="input"
             type="number"
+            min="0"
             placeholder="0.1"
             step="any"
           />
         </div>
-        <button className="ui teal labeled icon button">
-          <i className="plus icon" />
-          Add coin
-        </button>
+        <button className="ui transition hidden" />
       </form>
     </div>
   );

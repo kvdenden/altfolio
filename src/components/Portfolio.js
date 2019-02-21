@@ -1,18 +1,17 @@
+import _ from "lodash";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import _ from "lodash";
+import { Link } from "react-router-dom";
 
-import { fetchCoinData, fetchCurrency, addCoin, removeCoin } from "../actions";
+import { fetchCoinData, fetchCurrency, removeCoin } from "../actions";
 
 import PortfolioItem from "./PortfolioItem";
-import CoinForm from "./CoinForm";
 
 const Portfolio = ({
   coins,
   currency,
   fetchCoinData,
   fetchCurrency,
-  addCoin,
   removeCoin
 }) => {
   useEffect(() => {
@@ -40,8 +39,9 @@ const Portfolio = ({
           />
         ))}
       </div>
-      <div className="ui horizontal divider">Add coin to portfolio</div>
-      <CoinForm onSubmit={addCoin} />
+      <Link to="/add" className="ui teal button">
+        <i className="plus icon" /> Add coin
+      </Link>
     </div>
   );
 };
@@ -68,5 +68,5 @@ const mapStateToProps = ({ coinData, currency, portfolio }) => {
 
 export default connect(
   mapStateToProps,
-  { fetchCoinData, fetchCurrency, addCoin, removeCoin }
+  { fetchCoinData, fetchCurrency, removeCoin }
 )(Portfolio);
