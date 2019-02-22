@@ -1,21 +1,23 @@
 import React from "react";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { submit } from "redux-form";
 
 import history from "../history";
-import { addCoin } from "../actions";
 import CoinForm from "./CoinForm";
 import Modal from "./Modal";
 
-const CoinModal = ({ title, addCoin, submitForm }) => {
+const CoinModal = ({ title, initialValues, submitAction, dispatch }) => {
   const dismissModal = () => history.push("/");
-  const addCoinAndDismiss = coin => {
-    addCoin(coin);
+  const submitAndDismiss = values => {
+    submitAction(values);
     dismissModal();
   };
 
-  const coinForm = <CoinForm onSubmit={addCoinAndDismiss} />;
+  const submitForm = () => dispatch(submit("coinForm"));
+
+  const coinForm = (
+    <CoinForm onSubmit={submitAndDismiss} initialValues={initialValues} />
+  );
   const actions = (
     <>
       <button onClick={submitForm} className="ui button primary">
@@ -37,16 +39,4 @@ const CoinModal = ({ title, addCoin, submitForm }) => {
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    ...bindActionCreators({
-      addCoin,
-      submitForm: () => submit("coinForm")
-    })
-  };
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(CoinModal);
+export default connect()(CoinModal);

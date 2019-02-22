@@ -4,6 +4,7 @@ import {
   FETCH_COIN_DATA,
   FETCH_CURRENCY,
   ADD_PORTFOLIO_COIN,
+  EDIT_PORTFOLIO_COIN,
   REMOVE_PORTFOLIO_COIN
 } from "./types";
 
@@ -49,6 +50,16 @@ export const addCoin = ({ symbol, amount }) => {
     payload: {
       symbol,
       amount
+    }
+  };
+};
+
+export const editCoin = (coin, { symbol, amount }) => {
+  return {
+    type: EDIT_PORTFOLIO_COIN,
+    payload: {
+      coin,
+      values: { symbol, amount }
     }
   };
 };

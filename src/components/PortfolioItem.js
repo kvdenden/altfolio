@@ -35,7 +35,7 @@ const PortfolioItem = ({ coin, currency, onRemove }) => {
       <div className="right floated center aligned content">
         <Link to={`/edit/${coin.symbol}`} className="ui basic button">
           <i className="edit icon" />
-          Remove
+          Edit
         </Link>
         <button className="ui basic negative button" onClick={onRemove}>
           <i className="close icon" />
