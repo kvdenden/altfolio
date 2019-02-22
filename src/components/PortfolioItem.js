@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const PortfolioItem = ({ coin, currency, onRemove }) => {
   let content;
@@ -32,6 +33,10 @@ const PortfolioItem = ({ coin, currency, onRemove }) => {
   return (
     <div className="item">
       <div className="right floated center aligned content">
+        <Link to={`/edit/${coin.symbol}`} className="ui basic button">
+          <i className="edit icon" />
+          Remove
+        </Link>
         <button className="ui basic negative button" onClick={onRemove}>
           <i className="close icon" />
           Remove
