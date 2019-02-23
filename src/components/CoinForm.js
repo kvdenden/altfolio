@@ -1,6 +1,8 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
 
+import CoinSelect from "./CoinSelect";
+
 const CoinForm = ({ handleSubmit, reset }) => {
   const onSubmit = values => {
     handleSubmit(values);
@@ -12,12 +14,7 @@ const CoinForm = ({ handleSubmit, reset }) => {
       <form className="ui form" onSubmit={onSubmit}>
         <div className="field">
           <label>Coin</label>
-          <Field
-            name="symbol"
-            component="input"
-            type="text"
-            placeholder="BTC"
-          />
+          <Field name="symbol" component={CoinSelect} />
         </div>
         <div className="field">
           <label>Amount</label>
