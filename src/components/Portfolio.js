@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
+import { formatCurrency } from "../utils";
 import { fetchCoinPrices, removeCoin } from "../actions";
 
 import PortfolioItem from "./PortfolioItem";
@@ -25,7 +26,7 @@ const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
       <div className="ui center aligned header">
         <h2>My Portfolio</h2>
         <h3>
-          {totalValue.toFixed(2)} {currency}
+          {formatCurrency(totalValue)} {currency}
         </h3>
       </div>
       <div className="ui middle aligned celled list">

@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import { formatNumber, formatCurrency } from "../utils";
+
 const PortfolioItem = ({ coin, currency, onRemove }) => {
   let content;
 
@@ -21,7 +23,8 @@ const PortfolioItem = ({ coin, currency, onRemove }) => {
           <div className="header">{coin.name}</div>
           <div className="description">
             <small>
-              {coin.amount} {coin.symbol} ({coin.value.toFixed(2)} {currency})
+              {formatNumber(coin.amount)} {coin.symbol} (
+              {formatCurrency(coin.value)} {currency})
             </small>
           </div>
         </div>

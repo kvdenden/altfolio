@@ -1,5 +1,4 @@
 export const FETCH_COIN_DATA = "FETCH_COIN_DATA";
-export const FETCH_CURRENCY = "FETCH_CURRENCY";
 export const FETCH_COIN_PRICES = "FETCH_COIN_PRICES";
 
 export const SET_CURRENCY = "SET_CURRENCY";
