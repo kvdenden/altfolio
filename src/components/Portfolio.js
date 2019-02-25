@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { formatCurrency } from "../utils";
 import { fetchCoinPrices, removeCoin } from "../actions";
 
+import PieChart from "./PieChart";
 import PortfolioItem from "./PortfolioItem";
 
 const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
@@ -29,8 +30,9 @@ const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
           {formatCurrency(totalValue)} {currency}
         </h3>
       </div>
+      <PieChart coins={coins} />
       <div className="ui middle aligned celled list">
-        {_.orderBy(coins, "value", "desc").map(coin => (
+        {coins.map(coin => (
           <PortfolioItem
             key={coin.symbol}
             coin={coin}
@@ -64,7 +66,7 @@ const mapStateToProps = ({ coinData, prices, currency, portfolio }) => {
     };
   });
 
-  return { coins, currency };
+  return { coins: _.orderBy(coins, "value", "desc"), currency };
 };
 
 export default connect(
