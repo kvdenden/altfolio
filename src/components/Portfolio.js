@@ -3,20 +3,19 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { fetchCoinData, fetchCurrency, removeCoin } from "../actions";
+import { fetchCoinPrices, removeCoin } from "../actions";
 
 import PortfolioItem from "./PortfolioItem";
 
-const Portfolio = ({
-  coins,
-  currency,
-  fetchCoinData,
-  fetchCurrency,
-  removeCoin
-}) => {
+const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
+  const fetchPortfolioCoinPrices = () => {
+    fetchCoinPrices(coins.map(coin => coin.symbol), currency);
+  };
+
+  useEffect(fetchPortfolioCoinPrices, [coins.length, currency]);
+
   useEffect(() => {
-    fetchCoinData();
-    fetchCurrency();
+    setInterval(fetchPortfolioCoinPrices, 5 * 60 * 1000);
   }, []);
 
   const totalValue = _.sumBy(coins, "value") || 0;
@@ -26,11 +25,11 @@ const Portfolio = ({
       <div className="ui center aligned header">
         <h2>My Portfolio</h2>
         <h3>
-          {totalValue.toFixed(2)} {currency.symbol}
+          {totalValue.toFixed(2)} {currency}
         </h3>
       </div>
       <div className="ui middle aligned celled list">
-        {coins.map(coin => (
+        {_.orderBy(coins, "value", "desc").map(coin => (
           <PortfolioItem
             key={coin.symbol}
             coin={coin}
@@ -46,10 +45,11 @@ const Portfolio = ({
   );
 };
 
-const mapStateToProps = ({ coinData, currency, portfolio }) => {
+const mapStateToProps = ({ coinData, prices, currency, portfolio }) => {
   const coins = Object.values(portfolio).map(coin => {
     const data = coinData[coin.symbol];
-    if (!data) {
+    const price = prices[coin.symbol];
+    if (!data || !price) {
       return {
         ...coin,
         loading: true
@@ -59,7 +59,7 @@ const mapStateToProps = ({ coinData, currency, portfolio }) => {
     return {
       ...coin,
       ...data,
-      value: coin.amount * data.exchangeRate * currency.bitcoinPrice
+      value: coin.amount * price
     };
   });
 
@@ -68,5 +68,5 @@ const mapStateToProps = ({ coinData, currency, portfolio }) => {
 
 export default connect(
   mapStateToProps,
-  { fetchCoinData, fetchCurrency, removeCoin }
+  { fetchCoinPrices, removeCoin }
 )(Portfolio);

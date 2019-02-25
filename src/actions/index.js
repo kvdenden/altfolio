@@ -1,47 +1,63 @@
+import _ from "lodash";
+
 import cryptoCompare from "../api/cryptoCompare";
 
 import {
   FETCH_COIN_DATA,
-  FETCH_CURRENCY,
+  SET_CURRENCY,
   ADD_PORTFOLIO_COIN,
   EDIT_PORTFOLIO_COIN,
-  REMOVE_PORTFOLIO_COIN
+  REMOVE_PORTFOLIO_COIN,
+  FETCH_COIN_PRICES
 } from "./types";
 
-export const fetchCoinData = () => async dispatch => {
-  const response = await cryptoCompare.get("/top/mktcapfull", {
-    params: { limit: 100, tsym: "BTC" }
-  });
+export const fetchCoinData = ({ totalPages = 1 }) => async dispatch => {
+  let page = 0;
+  let moreCoins = true;
+  while (page < totalPages && moreCoins) {
+    const response = await cryptoCompare.get("/top/mktcapfull", {
+      params: { limit: 100, tsym: "BTC", page }
+    });
 
-  const coinData = response.data.Data.map(
-    ({ CoinInfo: coin, RAW: exchangeRate }) => ({
+    const coinData = response.data.Data.map(({ CoinInfo: coin }) => ({
       symbol: coin.Name,
       name: coin.FullName,
-      imageUrl: `https://www.cryptocompare.com${coin.ImageUrl}`,
-      exchangeRate: exchangeRate.BTC.PRICE
-    })
-  );
+      imageUrl: `https://www.cryptocompare.com${coin.ImageUrl}`
+    }));
 
+    if (coinData.length === 0) {
+      moreCoins = false;
+    } else {
+      dispatch({
+        type: FETCH_COIN_DATA,
+        payload: coinData
+      });
+
+      page++;
+    }
+  }
+};
+
+export const fetchCoinPrices = (coins, currency) => async dispatch => {
+  const response = await cryptoCompare.get(`pricemulti`, {
+    params: { fsyms: _.join(coins, ","), tsyms: currency }
+  });
+
+  const prices = _.mapValues(response.data, currency);
   dispatch({
-    type: FETCH_COIN_DATA,
-    payload: coinData
+    type: FETCH_COIN_PRICES,
+    payload: {
+      currency,
+      prices
+    }
   });
 };
 
-export const fetchCurrency = (symbol = "USD") => async dispatch => {
-  const response = await cryptoCompare.get(`price`, {
-    params: { fsym: "BTC", tsyms: symbol }
-  });
-
-  const bitcoinPrice = response.data[symbol];
-
-  dispatch({
-    type: FETCH_CURRENCY,
-    payload: {
-      symbol,
-      bitcoinPrice
-    }
-  });
+export const setCurrency = currency => {
+  return {
+    type: SET_CURRENCY,
+    payload: currency
+  };
 };
 
 export const addCoin = ({ symbol, amount }) => {

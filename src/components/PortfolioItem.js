@@ -21,8 +21,7 @@ const PortfolioItem = ({ coin, currency, onRemove }) => {
           <div className="header">{coin.name}</div>
           <div className="description">
             <small>
-              {coin.amount} {coin.symbol} ({coin.value.toFixed(2)}{" "}
-              {currency.symbol})
+              {coin.amount} {coin.symbol} ({coin.value.toFixed(2)} {currency})
             </small>
           </div>
         </div>

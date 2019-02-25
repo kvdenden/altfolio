@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import reduxThunk from "redux-thunk";
 
 import { loadState, saveState } from "./localStorage";
+import { fetchCoinData } from "./actions";
 import reducers from "./reducers";
 import App from "./components/App";
 
@@ -20,16 +21,19 @@ const store = createStore(
 
 store.subscribe(
   _.throttle(() => {
-    console.log("saving...");
-    const { portfolio, currency } = store.getState();
+    const { coinData, prices, portfolio, currency } = store.getState();
 
     saveState({
+      coinData,
+      prices,
       portfolio,
       currency
     });
   }),
   1000
 );
+
+store.dispatch(fetchCoinData({ totalPages: 3 }));
 
 ReactDOM.render(
   <Provider store={store}>
