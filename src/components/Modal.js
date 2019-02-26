@@ -16,7 +16,7 @@ const Modal = ({ title, content, actions, onDismiss }) => {
         <div className="actions">{actions}</div>
       </div>
     </div>,
-    document.getElementById("modal")
+    document.body
   );
 };
 
