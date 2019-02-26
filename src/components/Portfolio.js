@@ -4,14 +4,23 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { formatCurrency } from "../utils";
-import { fetchCoinPrices, removeCoin } from "../actions";
+import { fetchCoinPrices, removeCoin, fetchCoinHistory } from "../actions";
 
 import PieChart from "./PieChart";
 import PortfolioItem from "./PortfolioItem";
+import ChangePercentage from "./ChangePercentage";
 
-const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
+const Portfolio = ({
+  coins,
+  currency,
+  fetchCoinPrices,
+  fetchCoinHistory,
+  removeCoin
+}) => {
   const fetchPortfolioCoinPrices = () => {
-    fetchCoinPrices(coins.map(coin => coin.symbol), currency);
+    const coinArray = coins.map(coin => coin.symbol);
+    fetchCoinPrices(coinArray, currency);
+    coinArray.forEach(coin => fetchCoinHistory(coin, currency));
   };
 
   useEffect(fetchPortfolioCoinPrices, [coins.length, currency]);
@@ -20,7 +29,12 @@ const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
     setInterval(fetchPortfolioCoinPrices, 5 * 60 * 1000);
   }, []);
 
+  const coinsLoading = coins.some(coin => coin.loading);
+
   const totalValue = _.sumBy(coins, "value") || 0;
+  const oldValue = coinsLoading ? totalValue : _.sumBy(coins, "oldValue");
+
+  const relativeChange = (totalValue - oldValue) / oldValue;
 
   return (
     <div className="portfolio">
@@ -29,9 +43,12 @@ const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
         <h3>
           {formatCurrency(totalValue)} {currency}
         </h3>
+        <div>
+          <ChangePercentage value={relativeChange} />
+        </div>
       </div>
       <PieChart coins={coins} />
-      <div className="ui middle aligned celled list">
+      <div className="ui middle aligned celled selection list">
         {coins.map(coin => (
           <PortfolioItem
             key={coin.symbol}
@@ -48,7 +65,13 @@ const Portfolio = ({ coins, currency, fetchCoinPrices, removeCoin }) => {
   );
 };
 
-const mapStateToProps = ({ coinData, prices, currency, portfolio }) => {
+const mapStateToProps = ({
+  coinData,
+  prices,
+  history,
+  currency,
+  portfolio
+}) => {
   const coins = Object.values(portfolio).map(coin => {
     const data = coinData[coin.symbol];
     const price = prices[coin.symbol];
@@ -59,10 +82,26 @@ const mapStateToProps = ({ coinData, prices, currency, portfolio }) => {
       };
     }
 
+    let oldPrice = price;
+    const historicalPrices = history[coin.symbol];
+    if (historicalPrices) {
+      const currentUnixTime = Math.round(Date.now() / 1000);
+      const historicalPrice = _.chain(historicalPrices)
+        .orderBy("time", "desc")
+        .find(({ time }) => time <= currentUnixTime - 60 * 60 * 24)
+        .value();
+      if (historicalPrice) {
+        oldPrice = historicalPrice.price;
+      }
+    }
+
     return {
       ...coin,
       ...data,
-      value: coin.amount * price
+      price,
+      oldPrice,
+      value: coin.amount * price,
+      oldValue: coin.amount * oldPrice
     };
   });
 
@@ -71,5 +110,5 @@ const mapStateToProps = ({ coinData, prices, currency, portfolio }) => {
 
 export default connect(
   mapStateToProps,
-  { fetchCoinPrices, removeCoin }
+  { fetchCoinPrices, fetchCoinHistory, removeCoin }
 )(Portfolio);

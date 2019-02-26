@@ -8,7 +8,8 @@ import {
   ADD_PORTFOLIO_COIN,
   EDIT_PORTFOLIO_COIN,
   REMOVE_PORTFOLIO_COIN,
-  FETCH_COIN_PRICES
+  FETCH_COIN_PRICES,
+  FETCH_COIN_HISTORY
 } from "./types";
 
 export const fetchCoinData = ({ totalPages = 1 }) => async dispatch => {
@@ -49,6 +50,30 @@ export const fetchCoinPrices = (coins, currency) => async dispatch => {
     payload: {
       currency,
       prices
+    }
+  });
+};
+
+export const fetchCoinHistory = (coin, currency) => async dispatch => {
+  let history = [];
+  if (coin !== currency) {
+    const response = await cryptoCompare.get(`histohour`, {
+      params: { fsym: coin, tsym: currency, limit: 24 }
+    });
+
+    history = response.data.Data.map(({ time, close: price }) => {
+      return {
+        time,
+        price
+      };
+    });
+  }
+
+  dispatch({
+    type: FETCH_COIN_HISTORY,
+    payload: {
+      coin,
+      history
     }
   });
 };

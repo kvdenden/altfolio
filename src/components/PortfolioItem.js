@@ -17,6 +17,7 @@ const PortfolioItem = ({ coin, currency }) => {
       </div>
     );
   } else {
+    const relativeChange = (coin.price - coin.oldPrice) / coin.oldPrice;
     content = (
       <>
         <img alt={coin.name} className="ui avatar image" src={coin.imageUrl} />
@@ -28,6 +29,12 @@ const PortfolioItem = ({ coin, currency }) => {
               {formatCurrency(coin.value)} {currency})
             </small>
           </div>
+        </div>
+        <div
+          className="right floated center aligned content"
+          style={{ textAlign: "right", lineHeight: "2.5em" }}
+        >
+          <ChangePercentage value={relativeChange} />
         </div>
       </>
     );

@@ -23,10 +23,7 @@ const CurrencySelect = ({ currency, setCurrency }) => {
           <DropdownOption
             key={option}
             option={option}
-            onClick={() => {
-              console.log("clicked " + option);
-              setCurrency(option);
-            }}
+            onClick={() => setCurrency(option)}
           />
         ))}
       </div>
