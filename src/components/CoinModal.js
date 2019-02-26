@@ -6,10 +6,21 @@ import history from "../history";
 import CoinForm from "./CoinForm";
 import Modal from "./Modal";
 
-const CoinModal = ({ title, initialValues, submitAction, dispatch }) => {
+const CoinModal = ({
+  title,
+  initialValues,
+  submitAction,
+  extraButtons = {},
+  dispatch
+}) => {
   const dismissModal = () => history.push("/");
   const submitAndDismiss = values => {
     submitAction(values);
+    dismissModal();
+  };
+
+  const performActionAndDismiss = action => {
+    action();
     dismissModal();
   };
 
@@ -23,6 +34,19 @@ const CoinModal = ({ title, initialValues, submitAction, dispatch }) => {
       <button onClick={submitForm} className="ui button primary">
         {title}
       </button>
+      {Object.entries(extraButtons).map(
+        ([key, { text, action, className }]) => {
+          return (
+            <button
+              key={key}
+              onClick={() => performActionAndDismiss(action)}
+              className={className}
+            >
+              {text}
+            </button>
+          );
+        }
+      )}
       <button onClick={dismissModal} className="ui button">
         Cancel
       </button>

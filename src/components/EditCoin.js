@@ -1,14 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { editCoin } from "../actions";
+import { editCoin, removeCoin } from "../actions";
 import CoinModal from "./CoinModal";
 
-const EditCoin = ({ coin, editCoin }) => {
+const EditCoin = ({ coin, editCoin, removeCoin }) => {
+  const extraButtons = {
+    remove: {
+      text: "Remove Coin",
+      action: () => removeCoin(coin),
+      className: "ui basic negative button"
+    }
+  };
   return (
     <CoinModal
       title="Edit Coin"
       submitAction={values => editCoin(coin, values)}
+      extraButtons={extraButtons}
       initialValues={coin}
     />
   );
@@ -23,5 +31,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { editCoin }
+  { editCoin, removeCoin }
 )(EditCoin);

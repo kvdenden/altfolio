@@ -2,8 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { formatNumber, formatCurrency } from "../utils";
+import ChangePercentage from "./ChangePercentage";
 
-const PortfolioItem = ({ coin, currency, onRemove }) => {
+const PortfolioItem = ({ coin, currency }) => {
   let content;
 
   if (coin.loading) {
@@ -33,19 +34,9 @@ const PortfolioItem = ({ coin, currency, onRemove }) => {
   }
 
   return (
-    <div className="item">
-      <div className="right floated center aligned content">
-        <Link to={`/edit/${coin.symbol}`} className="ui basic button">
-          <i className="edit icon" />
-          Edit
-        </Link>
-        <button className="ui basic negative button" onClick={onRemove}>
-          <i className="close icon" />
-          Remove
-        </button>
-      </div>
+    <Link to={`/edit/${coin.symbol}`} className="item">
       {content}
-    </div>
+    </Link>
   );
 };
 
